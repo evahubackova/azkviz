@@ -57,28 +57,31 @@
         <p>Text tvojí otázky bude zde.</p>
         <div class="answer-choices">
             <!-- Vytvoříme ovál pro každou barvu, které hráči mohou získat. -->
-            <div class="answer-oval red" data-color="red" data-hexagon-id="hex-1"></div>
-            <div class="answer-oval green" data-color="green" data-hexagon-id="hex-1"></div>
-            <div class="answer-oval purple" data-color="purple" data-hexagon-id="hex-1"></div>
+            <div class="answer-oval red" data-color="red"></div>
+            <div class="answer-oval green" data-color="green"></div>
+            <div class="answer-oval purple" data-color="purple"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // Posílá zprávu do Genially po kliknutí na ovál
-    document.querySelectorAll('.answer-oval').forEach(oval => {
-        oval.addEventListener('click', function() {
-            const color = this.dataset.color;
-            const hexagonId = this.dataset.hexagonId;
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hexagonId = urlParams.get('id');
 
-            // Odeslání zprávy do hlavního okna Genially
-            window.parent.postMessage({
-                type: 'colorHexagon',
-                id: hexagonId,
-                color: color
-            }, 'https://evahubackova.github.io');
+        document.querySelectorAll('.answer-oval').forEach(oval => {
+            oval.addEventListener('click', function() {
+                const color = this.dataset.color;
+                
+                window.parent.postMessage({
+                    type: 'colorHexagon',
+                    id: hexagonId,
+                    color: color
+                }, '*'); // Měníme na '*' pro lepší kompatibilitu, ale s rizikem
+            });
         });
     });
 </script>
 </body>
 </html>
+
