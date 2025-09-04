@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ Kvíz</title>
+    <title>AZ Kvíz Otázka</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,69 +47,38 @@
         .answer-oval.red { background-color: #ff5252; }
         .answer-oval.green { background-color: #4CAF50; }
         .answer-oval.purple { background-color: #9C27B0; }
-        .answer-oval.black { background-color: #212121; }
     </style>
 </head>
 <body>
 
-<!-- Místo pro tvůj obsah otázky -->
 <div class="container">
     <div class="question-container">
         <h3>Otázka</h3>
         <p>Text tvojí otázky bude zde.</p>
         <div class="answer-choices">
-            <div class="answer-oval red" data-color="red"></div>
-            <div class="answer-oval green" data-color="green"></div>
-            <div class="answer-oval purple" data-color="purple"></div>
+            <!-- Vytvoříme ovál pro každou barvu, které hráči mohou získat. -->
+            <div class="answer-oval red" data-color="red" data-hexagon-id="hex-1"></div>
+            <div class="answer-oval green" data-color="green" data-hexagon-id="hex-1"></div>
+            <div class="answer-oval purple" data-color="purple" data-hexagon-id="hex-1"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // Funkce pro zavření Genially okna
-    function closeWindow() {
-        if (typeof window.parent.gdoc === 'object' && typeof window.parent.gdoc.closeInteractive === 'function') {
-            window.parent.gdoc.closeInteractive();
-        } else {
-            console.error("Genially okno nelze zavřít.");
-        }
-    }
+    // Posílá zprávu do Genially po kliknutí na ovál
+    document.querySelectorAll('.answer-oval').forEach(oval => {
+        oval.addEventListener('click', function() {
+            const color = this.dataset.color;
+            const hexagonId = this.dataset.hexagonId;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Získání parametrů z URL, které pošle Genially
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentHexagonId = urlParams.get('id');
-
-        // Funkce pro obarvení hexagonu na hlavní stránce Genially
-        function colorHexagon(color) {
-            try {
-                if (!currentHexagonId) {
-                    console.error("Hexagon ID nebylo předáno v URL.");
-                    return;
-                }
-                const mainDocument = window.parent.document;
-                const hexagon = mainDocument.getElementById(currentHexagonId);
-                
-                if (hexagon) {
-                    hexagon.classList.remove('colored-red', 'colored-green', 'colored-black', 'colored-purple');
-                    hexagon.classList.add(`colored-${color}`);
-                } else {
-                    console.error("Hexagon s ID '" + currentHexagonId + "' nebyl nalezen na hlavní stránce.");
-                }
-            } catch (e) {
-                console.error("Nebylo možné obarvit hexagon na hlavní stránce. Ujistěte se, že ID odpovídá a kód je ve správném okně.", e);
-            }
-        }
-
-        document.querySelectorAll('.answer-oval').forEach(oval => {
-            oval.addEventListener('click', function() {
-                const clickedColor = this.dataset.color;
-                colorHexagon(clickedColor);
-                closeWindow();
-            });
+            // Odeslání zprávy do hlavního okna Genially
+            window.parent.postMessage({
+                type: 'colorHexagon',
+                id: hexagonId,
+                color: color
+            }, 'https://evahubackova.github.io');
         });
     });
 </script>
-
 </body>
 </html>
