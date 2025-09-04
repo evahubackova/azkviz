@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ Kvíz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .question-container {
+            text-align: center;
+        }
+        .answer-choices {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .answer-oval {
+            width: 80px;
+            height: 50px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            border: 2px solid #333;
+            transition: transform 0.2s;
+        }
+        .answer-oval:hover {
+            transform: scale(1.1);
+        }
+        .answer-oval.red { background-color: #ff5252; }
+        .answer-oval.green { background-color: #4CAF50; }
+        .answer-oval.purple { background-color: #9C27B0; }
+        .answer-oval.black { background-color: #212121; }
+    </style>
+</head>
+<body>
+
+<!-- Místo pro tvůj obsah otázky -->
+<div class="container">
+    <div class="question-container">
+        <h3>Otázka</h3>
+        <p>Text tvojí otázky bude zde.</p>
+        <div class="answer-choices">
+            <div class="answer-oval red" data-color="red"></div>
+            <div class="answer-oval green" data-color="green"></div>
+            <div class="answer-oval purple" data-color="purple"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Funkce pro zavření Genially okna
+    function closeWindow() {
+        if (typeof window.parent.gdoc === 'object' && typeof window.parent.gdoc.closeInteractive === 'function') {
+            window.parent.gdoc.closeInteractive();
+        } else {
+            console.error("Genially okno nelze zavřít.");
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Získání parametrů z URL, které pošle Genially
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentHexagonId = urlParams.get('id');
+
+        // Funkce pro obarvení hexagonu na hlavní stránce Genially
+        function colorHexagon(color) {
+            try {
+                if (!currentHexagonId) {
+                    console.error("Hexagon ID nebylo předáno v URL.");
+                    return;
+                }
+                const mainDocument = window.parent.document;
+                const hexagon = mainDocument.getElementById(currentHexagonId);
+                
+                if (hexagon) {
+                    hexagon.classList.remove('colored-red', 'colored-green', 'colored-black', 'colored-purple');
+                    hexagon.classList.add(`colored-${color}`);
+                } else {
+                    console.error("Hexagon s ID '" + currentHexagonId + "' nebyl nalezen na hlavní stránce.");
+                }
+            } catch (e) {
+                console.error("Nebylo možné obarvit hexagon na hlavní stránce. Ujistěte se, že ID odpovídá a kód je ve správném okně.", e);
+            }
+        }
+
+        document.querySelectorAll('.answer-oval').forEach(oval => {
+            oval.addEventListener('click', function() {
+                const clickedColor = this.dataset.color;
+                colorHexagon(clickedColor);
+                closeWindow();
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
