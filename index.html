@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ Kvíz Otázka</title>
+    <title>AZ Kvíz</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,12 +51,12 @@
 </head>
 <body>
 
+<!-- Místo pro tvůj obsah otázky -->
 <div class="container">
     <div class="question-container">
         <h3>Otázka</h3>
         <p>Text tvojí otázky bude zde.</p>
         <div class="answer-choices">
-            <!-- Vytvoříme ovál pro každou barvu, které hráči mohou získat. -->
             <div class="answer-oval red" data-color="red"></div>
             <div class="answer-oval green" data-color="green"></div>
             <div class="answer-oval purple" data-color="purple"></div>
@@ -69,19 +69,37 @@
         const urlParams = new URLSearchParams(window.location.search);
         const hexagonId = urlParams.get('id');
 
+        // Funkce pro obarvení hexagonu na hlavní stránce Genially
+        function colorHexagon(color) {
+            try {
+                if (!hexagonId) {
+                    console.error("Hexagon ID nebylo předáno v URL.");
+                    return;
+                }
+                const mainDocument = window.parent.document;
+                const hexagon = mainDocument.getElementById(hexagonId);
+                
+                if (hexagon) {
+                    hexagon.classList.remove('colored-red', 'colored-green', 'colored-black', 'colored-purple');
+                    hexagon.classList.add(`colored-${color}`);
+                } else {
+                    console.error("Hexagon s ID '" + hexagonId + "' nebyl nalezen na hlavní stránce.");
+                }
+            } catch (e) {
+                console.error("Nebylo možné obarvit hexagon na hlavní stránce. Ujistěte se, že ID odpovídá a kód je ve správném okně.", e);
+            }
+        }
+
         document.querySelectorAll('.answer-oval').forEach(oval => {
             oval.addEventListener('click', function() {
-                const color = this.dataset.color;
-                
-                window.parent.postMessage({
-                    type: 'colorHexagon',
-                    id: hexagonId,
-                    color: color
-                }, '*'); // Měníme na '*' pro lepší kompatibilitu, ale s rizikem
+                const clickedColor = this.dataset.color;
+                colorHexagon(clickedColor);
             });
         });
     });
 </script>
+
 </body>
 </html>
+
 
