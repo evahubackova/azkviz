@@ -66,18 +66,16 @@
 <script>
     document.querySelectorAll('.answer-oval').forEach(oval => {
         oval.addEventListener('click', function() {
+            const hexagonId = this.dataset.hexagonId;
             const color = this.dataset.color;
-            this.style.backgroundColor = color;
-            this.closest('.answer-choices').querySelectorAll('.answer-oval').forEach(otherOval => {
-                otherOval.style.pointerEvents = 'none';
-            });
-            const questionElement = this.closest('.question-container').querySelector('p');
-            questionElement.textContent = 'Správná odpověď!';
+            // Změní URL v Genially, aby se obarvil hexagon
+            window.top.location.href = `https://evahubackova.github.io/azkviz/index.html#id=${hexagonId}&color=${color}`;
         });
     });
 </script>
 </body>
 </html>
+
 
 
 
