@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ Kvíz</title>
+    <title>AZ Kvíz Otázka</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,40 +51,29 @@
 </head>
 <body>
 
-<!-- Místo pro tvůj obsah otázky -->
 <div class="container">
     <div class="question-container">
         <h3>Otázka</h3>
         <p>Text tvojí otázky bude zde.</p>
         <div class="answer-choices">
-            <div class="answer-oval red" data-color="red"></div>
-            <div class="answer-oval green" data-color="green"></div>
-            <div class="answer-oval purple" data-color="purple"></div>
+            <div class="answer-oval red" data-color="red" data-hexagon-id="hex-1"></div>
+            <div class="answer-oval green" data-color="green" data-hexagon-id="hex-1"></div>
+            <div class="answer-oval purple" data-color="purple" data-hexagon-id="hex-1"></div>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const hexagonId = urlParams.get('id');
-
-        document.querySelectorAll('.answer-oval').forEach(oval => {
-            oval.addEventListener('click', function() {
-                const clickedColor = this.dataset.color;
-                
-                // Odeslání zprávy do Genially, která obsahuje ID hexagonu a barvu
-                window.parent.postMessage({
-                    type: 'colorHexagon',
-                    id: hexagonId,
-                    color: clickedColor
-                }, '*'); // Hvězdička znamená, že zprávu pošleme kamkoli
-            });
+    document.querySelectorAll('.answer-oval').forEach(oval => {
+        oval.addEventListener('click', function() {
+            const hexagonId = this.dataset.hexagonId;
+            const color = this.dataset.color;
+            window.top.location.href = `https://evahubackova.github.io/azkviz/index.html?id=${hexagonId}&color=${color}`;
         });
     });
 </script>
-
 </body>
 </html>
+
 
 
